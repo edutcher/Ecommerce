@@ -6,7 +6,7 @@ router.get('/', (req, res) => {});
 
 router.get('/item/:id', (req, res) => {});
 
-router.get('', (req, res) => {});
+router.get('/backend', (req, res) => {});
 
 router.get('*', (req, res) => {});
 

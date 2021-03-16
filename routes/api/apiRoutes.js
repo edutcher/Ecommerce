@@ -1,13 +1,10 @@
-const { json } = require('express');
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const categoryRoutes = require('./category-routes');
+const productRoutes = require('./product-routes');
+const tagRoutes = require('./tag-routes');
 
-router.get('', (req, res) => {});
-
-router.post('', (req, res) => {});
-
-router.delete('', (req, res) => {});
-
-router.put('', (req, res) => {});
+router.use('/categories', categoryRoutes);
+router.use('/products', productRoutes);
+router.use('/tags', tagRoutes);
 
 module.exports = router;

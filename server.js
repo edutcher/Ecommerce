@@ -13,4 +13,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
 app.use('/', html);
 
-app.listen(process.env.PORT || 3000, () => { console.log('Listening'); });
+sequelize.sync({ force: false }).then(() => {
+    app.listen(process.env.PORT || 3000, () => console.log('Now listening'));
+});
