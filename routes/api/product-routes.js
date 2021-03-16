@@ -33,8 +33,21 @@ router.post('/product', async(req, res) => {
     try {
         let { body } = req;
         console.log(body);
-        // let result = await Product.create(body);
-        // res.status(200).json(result);
+        let product = await Product.create(body);
+        if (body.tags) {
+            let tags = await Tag.findAll();
+            let newTags = body.tags.filter((curTag) => !tags.includes(curTag));
+            if (newTags) {
+                let result = await Tag.bulkCreate(newTags);
+            }
+            let productTags = [];
+            for (let tag of body.tags) {
+                let newProdTag = { product_id: product.id, tag_id: tag.id }
+                productTags.push(newProdTag);
+            }
+            let results = await ProductTag.bulkCreate(productTags);
+        }
+        res.status(200).json(product);
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -51,7 +64,7 @@ router.delete('/product/:id', async(req, res) => {
                 id: id
             }
         })
-        res.status(200).json(product);
+        res.status(200).json(result);
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
@@ -62,7 +75,26 @@ router.put('/product/:id', async(req, res) => {
     try {
         let { id } = req.params;
         let { body } = req;
-
+        let product = await Product.update(id, body);
+        if (body.tags) {
+            let tags = await Tags.findAll();
+            let newTags = body.tags.filter((curTag) => !tags.includes(curTag));
+            if (newTags) {
+                await Tag.bulkCreate(newTags);
+            }
+            let productTags = [];
+            for (let tag of body.tags) {
+                let newProdTag = { product_id: product.id, tag_id: tag.id }
+                productTags.push(newProdTag);
+            }
+            await ProductTag.destroy({
+                where: {
+                    product_id: product.id
+                }
+            })
+            await ProductTag.bulkCreate(productTags);
+        }
+        res.status(200).send(product)
     } catch (err) {
         console.log(err);
         res.status(500).send(err);

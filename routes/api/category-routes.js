@@ -26,7 +26,16 @@ router.get('/category/:id', async(req, res) => {
     }
 });
 
-router.post('/category', async(req, res) => {});
+router.post('/category', async(req, res) => {
+    try {
+        let { body } = req;
+        let result = await Category.create(body);
+        res.status(200).send(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
 router.delete('/category/:id', async(req, res) => {
     try {

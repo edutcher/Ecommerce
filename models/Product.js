@@ -29,6 +29,13 @@ Product.init({
             isInteger: true
         }
     },
+    image_url: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        validate: {
+            isUrl: true
+        }
+    },
     category_id: {
         type: DataTypes.INTEGER,
         references: {
