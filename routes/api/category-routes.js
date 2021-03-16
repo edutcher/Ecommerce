@@ -1,14 +1,48 @@
 const router = require('express').Router();
 const { Category, Product, Tag } = require('../../models');
 
-router.get('/catagories', (req, res) => {});
+router.get('/catagories', async(req, res) => {
+    try {
+        let results = await Category.findAll();
+        res.status(200).json(results)
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
-router.get('/category/:id', (req, res) => {});
+router.get('/category/:id', async(req, res) => {
+    try {
+        let { id } = req.params;
+        let results = await Category.findByPk(id, {
+            include: [{ model: Product }]
+        })
 
-router.post('/category', (req, res) => {});
+        if (!product) res.status(400).send('No Category with that id');
+        else res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
-router.delete('/category/:id', (req, res) => {});
+router.post('/category', async(req, res) => {});
 
-router.put('/category/:id', (req, res) => {});
+router.delete('/category/:id', async(req, res) => {
+    try {
+        let { id } = req.params;
+        let results = await Category.destroy({
+            where: {
+                id: id
+            }
+        })
+        res.status(200).json(results);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
+
+router.put('/category/:id', async(req, res) => {});
 
 module.exports = router;

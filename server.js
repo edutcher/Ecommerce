@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const api = require('./routes/api/apiRoutes');
 const html = require('./routes/html/htmlRoutes');
+const sequelize = require('./config/connection');
 
 const app = express();
 
