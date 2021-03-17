@@ -1,9 +1,9 @@
 const router = require('express').Router();
 const { Category, Product, Tag } = require('../../models');
 
-router.get('/catagories', async(req, res) => {
+router.get('/', async(req, res) => {
     try {
-        let results = await Category.findAll();
+        let results = await Category.findAll({ include: [{ model: Product }] });
         res.status(200).json(results)
     } catch (err) {
         console.log(err);
@@ -11,14 +11,11 @@ router.get('/catagories', async(req, res) => {
     }
 });
 
-router.get('/category/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {
     try {
         let { id } = req.params;
-        let results = await Category.findByPk(id, {
-            include: [{ model: Product }]
-        })
-
-        if (!product) res.status(400).send('No Category with that id');
+        let results = await Category.findByPk(id, { include: [{ model: Product }] })
+        if (!results) res.status(400).send('No Category with that id');
         else res.status(200).json(results);
     } catch (err) {
         console.log(err);
@@ -26,7 +23,7 @@ router.get('/category/:id', async(req, res) => {
     }
 });
 
-router.post('/category', async(req, res) => {
+router.post('/', async(req, res) => {
     try {
         let { body } = req;
         let result = await Category.create(body);
@@ -37,7 +34,7 @@ router.post('/category', async(req, res) => {
     }
 });
 
-router.delete('/category/:id', async(req, res) => {
+router.delete('/:id', async(req, res) => {
     try {
         let { id } = req.params;
         let results = await Category.destroy({
@@ -52,6 +49,20 @@ router.delete('/category/:id', async(req, res) => {
     }
 });
 
-router.put('/category/:id', async(req, res) => {});
+router.put('/:id', async(req, res) => {
+    try {
+        let { id } = req.params;
+        let { body } = req;
+        let result = await Category.update(body, {
+            where: {
+                id: id
+            }
+        });
+        res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+});
 
 module.exports = router;

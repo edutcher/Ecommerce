@@ -1,9 +1,11 @@
 const router = require('express').Router();
 const { Category, Product, Tag, ProductTag } = require('../../models');
 
-router.get('/tags', async(req, res) => {
+router.get('/', async(req, res) => {
     try {
-        let results = await Tag.findAll();
+        let results = await Tag.findAll({
+            include: [{ model: Product, through: ProductTag }]
+        });
         res.status(200).json(results)
     } catch (err) {
         console.log(err);
@@ -11,17 +13,17 @@ router.get('/tags', async(req, res) => {
     }
 });
 
-router.get('/tags/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {
     try {
         let { id } = req.params;
         let results = await Tag.findByPk(id, {
-            include: [{ model: Product, through: ProductTag, as: 'tagged_products' }],
+            include: [{ model: Product, through: ProductTag }],
             where: {
                 id: id
             }
         })
 
-        if (!product) res.status(400).send('No Category with that id');
+        if (!results) res.status(400).send('No Category with that id');
         else res.status(200).json(results);
     } catch (err) {
         console.log(err);
@@ -29,7 +31,7 @@ router.get('/tags/:id', async(req, res) => {
     }
 });
 
-router.post('/tag', async(req, res) => {
+router.post('/', async(req, res) => {
     try {
         let { body } = req
         let result = await Tag.create(body)
@@ -40,7 +42,7 @@ router.post('/tag', async(req, res) => {
     }
 });
 
-router.delete('/tag/:id', async(req, res) => {
+router.delete('/:id', async(req, res) => {
     try {
         let { id } = req.params;
         let result = await Tag.destroy({
@@ -55,7 +57,7 @@ router.delete('/tag/:id', async(req, res) => {
     }
 });
 
-router.put('/tag/:id', async(req, res) => {
+router.put('/:id', async(req, res) => {
     try {
         let { id } = req.params;
         let { body } = req;

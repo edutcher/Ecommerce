@@ -26,8 +26,12 @@ Product.init({
         allowNull: false,
         defaultValue: 10,
         validate: {
-            isInteger: true
+            isInt: true
         }
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true
     },
     image_url: {
         type: DataTypes.STRING,
