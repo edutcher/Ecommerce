@@ -1,32 +1,30 @@
 const { Tag } = require('../models');
 
-const tagData = [{
-        tag_name: 'Cold Comfort',
-    },
-    {
-        tag_name: 'Madness Manifest',
-    },
-    {
-        tag_name: 'Insane Infants',
-    },
-    {
-        tag_name: 'Nightmarish Nourishment',
-    },
-    {
-        tag_name: 'Yog-Sothoth',
-    },
-    {
-        tag_name: "C'Thulhu",
-    },
-    {
-        tag_name: 'Nub-Shiggurath',
-    },
-    {
-        tag_name: 'Azathoth',
-    },
-    {
-        tag_name: 'Nyarlathotep',
-    },
+const tagData = [
+  {
+    tag_name: 'rock music',
+  },
+  {
+    tag_name: 'pop music',
+  },
+  {
+    tag_name: 'blue',
+  },
+  {
+    tag_name: 'red',
+  },
+  {
+    tag_name: 'green',
+  },
+  {
+    tag_name: 'white',
+  },
+  {
+    tag_name: 'gold',
+  },
+  {
+    tag_name: 'pop culture',
+  },
 ];
 
 const seedTags = () => Tag.bulkCreate(tagData);

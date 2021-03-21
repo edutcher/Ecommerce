@@ -3,7 +3,7 @@ const { Category, Product, Tag, ProductTag } = require('../../models');
 
 router.get('/', async(req, res) => {
     try {
-        let products = await Product.findAll({ include: [{ model: Category }] });
+        let products = await Product.findAll({ include: [{ model: Tag, through: ProductTag }, { model: Category }] });
         res.status(200).json(products)
     } catch (err) {
         console.log(err);
@@ -34,20 +34,12 @@ router.post('/', async(req, res) => {
         let { body } = req;
         let product = await Product.create(body);
         if (body.tags) {
-            let tags = await Tag.findAll();
-            console.log(tags);
-            let newTags = body.tags.filter((curTag) => !tags.includes(curTag));
-            console.log(newTags);
-            // if (newTags) {
-            //     let result = await Tag.bulkCreate(newTags);
-            // }
             let productTags = [];
             for (let tag of body.tags) {
                 let newProdTag = { product_id: product.id, tag_id: tag.id }
                 productTags.push(newProdTag);
             }
-            console.log(productTags);
-            let results = await ProductTag.bulkCreate(productTags);
+            await ProductTag.bulkCreate(productTags);
         }
         res.status(200).json(product);
     } catch (err) {
@@ -79,32 +71,21 @@ router.put('/:id', async(req, res) => {
         let { body } = req;
         let product = await Product.update(body, {
             where: {
-                id: id
+                id: req.params.id
             }
         });
         if (body.tags) {
-            let tags = await Tag.findAll();
-            console.log(tags);
-            let newTags = body.tags.filter((curTag) => curTag.id === null)
-                .map((curTag) => {
-                    let newTag = { tag_name: curTag.tag_name };
-                    return newTag
-                });
-            console.log(newTags);
-            if (newTags) {
-                await Tag.bulkCreate(newTags);
+            let productTags = [];
+            for (let tag of body.tags) {
+                let newProdTag = { product_id: id, tag_id: tag.id }
+                productTags.push(newProdTag);
             }
-            // let productTags = [];
-            // for (let tag of body.tags) {
-            //     let newProdTag = { product_id: product.id, tag_id: tag.id }
-            //     productTags.push(newProdTag);
-            // }
-            // await ProductTag.destroy({
-            //     where: {
-            //         product_id: product.id
-            //     }
-            // })
-            // await ProductTag.bulkCreate(productTags);
+            await ProductTag.destroy({
+                where: {
+                    product_id: id
+                }
+            })
+            await ProductTag.bulkCreate(productTags);
         }
         res.status(200).send(product)
     } catch (err) {
